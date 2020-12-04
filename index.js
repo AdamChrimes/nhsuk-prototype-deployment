@@ -26,6 +26,7 @@ handler.on('repository', function (event) {
   if(action == 'created' && repositoryName.includes('-prototype')) {
     console.log(chalk.magenta(`🔧 ${repositoryName} created by ${userLogin} (${userProfile})`));
     console.log(chalk.cyanBright('⏬ Downloading NHS.UK prototype kit...'));
+    copyPrototypeKit(`${repositoryName}`, `${repositoryCloneURL}`);
     console.log(chalk.blue('🚀 Deploying Azure Web App...'));
     console.log(chalk.yellow('🔐 Setting username and password...'));
     console.log(chalk.green(`🎉 Prototype deployed to: https://${repositoryName}.azurewebsites.net`));
@@ -33,30 +34,18 @@ handler.on('repository', function (event) {
   }
 });
 
-async function copyPrototypeKit(name) {
+async function copyPrototypeKit(name, repoURL) {
   fs.copySync('./repos/nhsuk-prototype-kit', `./repos/${name}`)
-}
 
-copyPrototypeKit(`find-nhs-number-prototype`);
+  setTimeout( function(){
+    const git = simpleGit(`./repos/${name}`, { binary: 'git' });
 
-// Learn more about Promise/async/await
-
-
-/* async function uploadPrototypeKit(name, repoURL) {
-
-  const git = simpleGit(`./repos/${repoURL}`, { binary: 'git' });
-
-  copyPrototypeKit(name).then(
     git.init()
-    .then(() => git.removeRemote('origin'))
-    .then(() => git.addRemote('origin', `${repoURL}`))
-    .then(() => git.add('*'))
-    .then(() => git.commit('initial commit'))
-    .then(() => git.push('origin', `main`))
-    .catch(err => console.error(err))
-  )
-
+      .then(() => git.addRemote('origin', `${repoURL}`))
+      .then(() => git.checkoutLocalBranch('main'))
+      .then(() => git.add('*'))
+      .then(() => git.commit('initial commit'))
+      .then(() => git.push('origin', `main`))
+      .catch(err => console.error(err))
+  }, 3000 );
 }
-
-uploadPrototypeKit(`find-nhs-number-prototype`, `https://github.com/Chrimes-Development/find-nhs-number-prototype.git`);
- */
