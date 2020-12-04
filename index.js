@@ -24,17 +24,20 @@ handler.on('repository', function (event) {
   const userProfile = event.payload.sender.html_url;
   
   if(action == 'created' && repositoryName.includes('-prototype')) {
-    console.log(chalk.magenta(`🔧 ${repositoryName} created by ${userLogin} (${userProfile})`));
-    console.log(chalk.cyanBright('⏬ Downloading NHS.UK prototype kit...'));
+    console.log(chalk.magenta(`🏁 ${repositoryName} created by ${userLogin} (${userProfile})`));
     copyPrototypeKit(`${repositoryName}`, `${repositoryCloneURL}`);
+    /*  
     console.log(chalk.blue('🚀 Deploying Azure Web App...'));
     console.log(chalk.yellow('🔐 Setting username and password...'));
     console.log(chalk.green(`🎉 Prototype deployed to: https://${repositoryName}.azurewebsites.net`));
-    console.log(chalk.green(`💻 Clone the repository with the URL: ${repositoryCloneURL}`));
+    console.log(chalk.green(`💻 Clone the repository with the URL: ${repositoryCloneURL}`)); 
+    */
   }
 });
 
 async function copyPrototypeKit(name, repoURL) {
+  console.log(chalk.white('⏬ Setting up the NHS.UK prototype kit...'));
+
   fs.copySync('./repos/nhsuk-prototype-kit', `./repos/${name}`)
 
   setTimeout( function(){
@@ -44,8 +47,13 @@ async function copyPrototypeKit(name, repoURL) {
       .then(() => git.addRemote('origin', `${repoURL}`))
       .then(() => git.checkoutLocalBranch('main'))
       .then(() => git.add('*'))
-      .then(() => git.commit('initial commit'))
+      .then(() => git.commit(':tada: initial commit by NHS.UK prototype kit setup'))
       .then(() => git.push('origin', `main`))
-      .catch(err => console.error(err))
-  }, 3000 );
+      .catch(error => {
+        console.error('onRejected function called: ' + error.message);
+      })
+      .then(() => {
+        console.log(chalk.green('✅ NHS.UK prototype kit setup complete!'));
+      });
+  }, 1500 );
 }
