@@ -1,0 +1,22 @@
+{
+  "name": "github-webhooks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "git-clone": "^0.1.0",
+    "github-webhook-handler": "^1.0.0",
+    "nodegit": "^0.27.0",
+    "shelljs": "^0.8.4",
+    "simple-git": "^2.24.0"
+  },
+  "devDependencies": {
+    "chalk": "^4.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Adam Chrimes (https://github.com/AdamChrimes)",
+  "license": "MIT"
+}
